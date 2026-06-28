@@ -31,11 +31,13 @@ def detect_brute_force(alerts):
 
         if count >= 3:
 
-            results.append({
-                "attack": "Brute Force",
-                "ip": ip,
-                "failed_logins": count,
-                "severity": "High"
+           results.append({
+    "attack": "Brute Force",
+    "ip": ip,
+    "failed_logins": count,
+    "severity": "High",
+    "description": "Multiple failed login attempts detected.",
+    "recommendation": "Block the source IP and investigate the account."
 })
 
         print("-------------------------")

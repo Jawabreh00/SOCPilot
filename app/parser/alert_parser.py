@@ -1,6 +1,8 @@
 from datetime import datetime
 from app.parser.log_reader import read_logs
 from app.detection.brute_force import detect_brute_force
+from app.detection.port_scan import detect_port_scan
+from app.report_generator import save_report
 """
 alerts = [
     {
@@ -64,8 +66,22 @@ for ip, count in failed_ips.items():
 
     print("----------------------")
     """
-results = detect_brute_force(alerts)
+results = []
 
-print(results)
-  
+results.extend(detect_brute_force(alerts))
+results.extend(detect_port_scan(alerts))
+
+for result in results:
+
+    print("=" * 40)
+    print("🚨 Attack:", result["attack"])
+    print("IP:", result["ip"])
+    print("Severity:", result["severity"])
+
+    if "failed_logins" in result:
+        print("Failed Logins:", result["failed_logins"])
+
+    print("Description:", result["description"])
+    print("Recommendation:", result["recommendation"])    
     
+save_report(results)

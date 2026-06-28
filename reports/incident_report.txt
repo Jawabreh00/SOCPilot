@@ -1,0 +1,21 @@
+SOCPilot Incident Report
+Generated: 2026-06-29 01:02:35
+========================================
+
+Attack: Brute Force
+IP: 192.168.1.10
+Severity: High
+Failed Logins: 3
+Description: Multiple failed login attempts detected.
+Recommendation: Block the source IP and investigate the account.
+
+----------------------------------------
+
+Attack: Port Scan
+IP: 192.168.1.50
+Severity: Medium
+Description: Possible port scanning activity detected.
+Recommendation: Investigate the source IP and monitor network activity.
+
+----------------------------------------
+
