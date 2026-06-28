@@ -1,5 +1,6 @@
 from datetime import datetime
-from log_reader import read_logs
+from app.parser.log_reader import read_logs
+from app.detection.brute_force import detect_brute_force
 """
 alerts = [
     {
@@ -29,6 +30,7 @@ alerts = [
 """
 alerts = read_logs("sample_logs/failed_login.log")
 
+"""
 
 failed_ips = {}
 last_attempt = {}
@@ -61,5 +63,9 @@ for ip, count in failed_ips.items():
         print("🚨 Possible Brute Force Attack")
 
     print("----------------------")
+    """
+results = detect_brute_force(alerts)
+
+print(results)
   
     
