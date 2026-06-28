@@ -1,4 +1,6 @@
 from datetime import datetime
+from log_reader import read_logs
+"""
 alerts = [
     {
         "time": "10:00:01",
@@ -24,6 +26,8 @@ alerts = [
         "event": "User login"
     }
 ]
+"""
+alerts = read_logs("sample_logs/failed_login.log")
 
 
 failed_ips = {}
@@ -57,24 +61,5 @@ for ip, count in failed_ips.items():
         print("🚨 Possible Brute Force Attack")
 
     print("----------------------")
-    alerts_from_file = []
-    log_file = open("sample_logs/failed_login.log", "r")
-
-for line in log_file:
-    parts = line.strip().split(",")
-    time = parts[0]
-    ip = parts[1]
-    event = parts[2]
-
-    alert = {
-    "time": time,
-    "ip": ip,
-    "event": event
-}
-
-    alerts_from_file.append(alert)
-
-log_file.close()
-
-print(alerts_from_file)
+  
     
