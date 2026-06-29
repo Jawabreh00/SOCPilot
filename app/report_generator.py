@@ -1,8 +1,13 @@
 from datetime import datetime
+from app.detection.mitre_mapper import get_mitre_info
+
+
 
 def save_report(results):
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = f"reports/incident_{timestamp}.txt"
 
-    with open("reports/incident_report.txt", "w") as report:
+    with open(filename, "w") as report:
 
         report.write("SOCPilot Incident Report\n")
         report.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
@@ -20,6 +25,13 @@ def save_report(results):
 
             report.write(f"Description: {result['description']}\n")
             report.write(f"Recommendation: {result['recommendation']}\n")
+            mitre = get_mitre_info(result["attack"])
+
+            if mitre:
+                report.write(f"MITRE Technique: {mitre['technique']}\n")
+                report.write(f"MITRE Name: {mitre['name']}\n")
 
             report.write("\n")
             report.write("-" * 40 + "\n\n")
+
+    print(f"Report saved: {filename}")        

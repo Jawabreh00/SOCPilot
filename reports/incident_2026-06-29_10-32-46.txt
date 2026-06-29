@@ -1,5 +1,5 @@
 SOCPilot Incident Report
-Generated: 2026-06-29 09:36:21
+Generated: 2026-06-29 10:32:46
 ========================================
 
 Attack: Brute Force
@@ -8,6 +8,8 @@ Severity: High
 Failed Logins: 3
 Description: Multiple failed login attempts detected.
 Recommendation: Block the source IP and investigate the account.
+MITRE Technique: T1110
+MITRE Name: Brute Force
 
 ----------------------------------------
 
@@ -16,6 +18,8 @@ IP: 192.168.1.50
 Severity: Medium
 Description: Possible port scanning activity detected.
 Recommendation: Investigate the source IP and monitor network activity.
+MITRE Technique: T1046
+MITRE Name: Network Service Discovery
 
 ----------------------------------------
 
