@@ -2,6 +2,7 @@ import streamlit as st
 from mitre_helper import get_mitre_info
 from risk_engine import analyze_alert
 from checklist_helper import get_checklist
+from recommendation_engine import get_next_action
 
 
 def show_ai_copilot(data):
@@ -18,8 +19,21 @@ def show_ai_copilot(data):
 
     status = "Likely True Positive"
 
-    analysis = analyze_alert(current)
     checklist = get_checklist(current["Attack"])
+    checks = {}
+    analysis = analyze_alert(current, checks)
+    if analysis["risk"] >= 8:
+        next_action = "Immediately isolate the affected host and begin incident response."
+
+    elif analysis["risk"] >= 5:
+        next_action = "Continue investigating the alert and collect additional evidence."
+
+    else:
+        next_action = "Monitor the alert. No immediate action is required."
+    next_action = get_next_action(
+        current["Attack"],
+        analysis["risk"]
+)    
 
     st.subheader("🤖 AI Security Copilot")
 
@@ -48,14 +62,38 @@ def show_ai_copilot(data):
             st.markdown("### Detection Tips")
             st.warning(mitre["detection"]) 
 
+    
+
+    st.divider()
+
+    
+
+    st.subheader("📝 AI Summary")
+
+    st.info(f"""
+Attack Type: {current["Attack"]}
+
+Source IP: {current["IP"]}
+
+Severity: {current["Severity"]}
+
+The observed behavior is consistent with this attack type.
+
+The analyst should verify authentication logs and confirm whether the activity is malicious.
+""")
+    st.subheader("☑ False Positive Checklist")
+
+    checks = {}
+
+    for item in checklist:
+        checks[item] = st.checkbox(item)
+
+    analysis = analyze_alert(current, checks)
     with col2:
 
         st.metric("Confidence", f"{analysis['confidence']}%")
         st.metric("Risk Score", f"{analysis['risk']} / 10")
         st.metric("Status", analysis["verdict"])
-
-    st.divider()
-
     st.subheader("🧠 AI Verdict")
 
 
@@ -82,26 +120,9 @@ def show_ai_copilot(data):
 This alert currently has a low risk score.
 Monitor the activity before taking action.
 """)
+    st.subheader("🎯 Next Best Action")
+    st.warning(next_action)
 
-    st.subheader("📝 AI Summary")
-
-    st.info(f"""
-Attack Type: {current["Attack"]}
-
-Source IP: {current["IP"]}
-
-Severity: {current["Severity"]}
-
-The observed behavior is consistent with this attack type.
-
-The analyst should verify authentication logs and confirm whether the activity is malicious.
-""")
-    st.subheader("☑ False Positive Checklist")
-
-    checks = {}
-
-    for item in checklist:
-        checks[item] = st.checkbox(item)
     st.subheader("🔎 Investigation Guide")
 
     if mitre:

@@ -24,10 +24,38 @@ def analyze_alert(alert, checks=None):
     elif "Low" in severity:
         risk -= 1
 
-    risk = min(risk, 10)
+    # False Positive Adjustments
 
+    if checks.get("Is the source IP internal?"):
+        risk -= 1.5
+        confidence -= 8
+
+    if checks.get("Did any login eventually succeed?"):
+        risk += 1
+        confidence += 3
+
+    if checks.get("Check if MFA is enabled."):
+        risk -= 1
+        confidence -= 5
+
+    if checks.get("Has this IP attacked before?"):
+        risk += 1
+        confidence += 4
+
+    if checks.get("Is the account locked?"):
+        risk -= 0.5    
+
+    risk = max(0, min(risk, 10))
+    confidence = max(0, min(confidence, 100))
+    if risk >= 8:
+        verdict = "Likely True Positive"
+    elif risk >= 5:
+        verdict = "Needs Investigation"
+
+    else:
+        verdict = "Likely False Positive"
     return {
         "confidence": confidence,
         "risk": round(risk,1),
         "verdict": verdict
-    }
+        }
